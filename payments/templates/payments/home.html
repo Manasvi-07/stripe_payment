@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Product Store</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+  <h2>Products</h2>
+
+  <form id="productForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    {% for product in products %}
+      <div>
+        <h3>{{ product.name }}</h3>
+        {% for price in product.prices.all %}
+          <p>Price: ₹{{ price.unit_amount|floatformat:2 }}</p>
+          <button type="button" onclick="startCheckout('{{ price.id }}')">Buy Now</button>
+          <button type="button" onclick="addToCart('{{ price.id }}')">Add to Cart</button>
+        {% endfor %}
+      </div>
+      <hr>
+    {% endfor %}
+  </form>
+
+  <a href="/cart/">Go to Cart</a>
+
+  <script>
+    const stripe = Stripe("{{ stripe_publishable_key }}");
+
+    function getEmail() {
+      const email = document.getElementById("email").value;
+      if (!email) {
+        alert("Please enter your email.");
+        return null;
+      }
+      return email;
+    }
+
+    function startCheckout(priceId) {
+        const email = document.getElementById("email").value;
+        if (!email) {
+          alert("Please enter your email.");
+          return;
+        }
+      
+        fetch(`/create-checkout-price/${priceId}/`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.id) {
+            stripe.redirectToCheckout({ sessionId: data.id });
+          } else {
+            alert("Error: " + (data.error || "Unknown error"));
+          }
+        })
+        .catch(error => {
+          console.error("Checkout error:", error);
+          alert("An error occurred while initiating checkout.");
+        });
+      }
+
+    function addToCart(productId) {
+      const email = getEmail();
+      if (!email) return;
+
+      fetch("/add-to-cart/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: `product_id=${productId}&email=${encodeURIComponent(email)}`
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert(data.message);
+      })
+      .catch(error => {
+        alert("Error adding to cart.");
+        console.error(error);
+      });
+    }
+  </script>
+</body>
+</html>
