@@ -24,6 +24,8 @@ class Price(models.Model):
     stripe_price_id = models.CharField(max_length=100, blank=True, null=True)
     currency = models.CharField(max_length=10, default='usd')
     unit_amount = models.IntegerField(help_text="Amount in cents")
+    recurring_interval = models.CharField(max_length=10, choices=[('month', 'Monthly'), ('year', 'Yearly'), ('', 'One-time')], default='')
 
     def __str__(self):
-        return f"{self.unit_amount / 100:.2f} {self.currency.upper()} - {self.product.name}"
+        suffix = f" - {self.recurring_interval}" if self.recurring_interval else ""
+        return f"{self.unit_amount / 100:.2f} {self.currency.upper()} - {self.product.name}{suffix}"

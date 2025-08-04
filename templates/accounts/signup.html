@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Signup</title>
+</head>
+<body>
+    <h2>Signup</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div>
+            <label> Email : </label>
+            <input type="email" name="email" placeholder="Email" required>
+        </div>
+        <div>
+            <label >Password:</label>
+            <input type="password" name="password" id="id_password" placeholder="Password" required>
+        </div>
+        <div>
+            <label >Confirm Password:</label>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}" />
+        <button type="submit">Create Account</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</body>
+</html>

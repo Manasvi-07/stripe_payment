@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Subscription Plans</title>
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <h2>Subscription Plans</h2>
+
+    <div id="products">
+      {% if user.is_authenticated %}
+        <p>Welcome, {{ user.email }}!</p>
+        <a href="{% url 'logout' %}"><button>Logout</button></a>
+      {% endif %}
+      {% for product in products %}
+        <div>
+          <h3>{{ product.name }}</h3>
+          <p>{{ product.description }}</p>
+
+          {% for price in product.prices.all %}
+            <p>
+              ₹{{ price.unit_amount|floatformat:2 }} /{% if price.recurring_interval %}
+                {{ price.recurring_interval }}
+              {% else %}
+                one time
+              {% endif %}
+            </p>
+            <button onclick="startCheckout('{{ price.id }}')">Buy Now</button>
+          {% endfor %}
+        </div>
+      {% empty %}
+        <p>No products found.</p>
+      {% endfor %}
+    </div>
+
+    <script>
+      const stripe = Stripe('{{ stripe_publishable_key }}')
+      
+      function startCheckout(priceId) {
+        fetch(`/create-checkout/${priceId}/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: JSON.stringify({})
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.id) {
+              stripe.redirectToCheckout({ sessionId: data.id })
+            } else {
+              alert('Error: ' + (data.error || 'Unknown error'))
+            }
+          })
+          .catch((error) => {
+            console.error('Checkout error:', error)
+            alert('An error occurred while initiating checkout.')
+          })
+      }
+    </script>
+  </body>
+</html>
