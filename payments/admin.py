@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import StripePayment, Product, Price
+from .models import StripePayment, Product, Price, Subscription
 
 class StripePaymentAdmin(admin.ModelAdmin):
      list_display = ('session_id', 'email', 'amount_total', 'currency', 'payment_status', 'created_at')
@@ -7,3 +7,4 @@ class StripePaymentAdmin(admin.ModelAdmin):
 admin.site.register(StripePayment, StripePaymentAdmin)
 admin.site.register(Product)
 admin.site.register(Price)
+admin.site.register(Subscription)

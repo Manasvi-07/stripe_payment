@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Subscription Plans{% endblock %}
+
+{% block content %}
+  <h2>Subscription Plans</h2>
+
+  <div class="status">
+    {% if user.has_active_subscription %}
+      Active until <strong>{{ user.subscription_end|date:'d M Y' }}</strong>
+    {% else %}
+      No active subscription.
+    {% endif %}
+  </div>
+
+  <div class="plans">
+    {% for product in products %}
+      <div class="product-card">
+        <h3>{{ product.name }}</h3>
+        <p>{{ product.description }}</p>
+        {% for price in product.prices.all %}
+          <p>₹{{ price.unit_amount|floatformat:2 }} / {{ price.recurring_interval|default:"one time" }}</p>
+          <button class="btn" onclick="startCheckout('{{ price.stripe_price_id }}')">Buy Now</button>
+        {% endfor %}
+      </div>
+    {% empty %}
+      <p>No products available.</p>
+    {% endfor %}
+  </div>
+
+  <script>
+    const stripe = Stripe('{{ stripe_publishable_key }}');
+    function startCheckout(priceId) {
+      fetch(`/payments/create-checkout/${priceId}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": "{{ csrf_token }}"
+        },
+        body: JSON.stringify({})
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.id) stripe.redirectToCheckout({ sessionId: data.id });
+        else alert("Error: " + (data.error || "Unknown error"));
+      });
+    }
+  </script>
+{% endblock %}
