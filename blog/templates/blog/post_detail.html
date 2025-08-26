@@ -4,7 +4,6 @@
 <h1>{{ post.title }}</h1>
 <p>By {{ post.author.email }} on {{ post.created|date:"d M Y H:i" }}</p>
 <p>{{ post.content }}</p>               
-
 {% if user.is_authenticated and post.author == user %}
     <a href="{% url 'post-update' post.pk %}">Edit</a>
     <a href="{% url 'post-delete' post.pk %}">Delete</a>

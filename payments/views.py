@@ -160,6 +160,9 @@ class StripeWebhookView(View):
         if interval in ["year", "yearly"]:
             end_date = start_date + timedelta(days=365)
             plan_choice = "yearly"
+        elif interval in ["week", "weekly"]:
+            end_date = start_date + timedelta(days=7)
+            plan_choice = "weekly"
         else:
             end_date = start_date + timedelta(days=30)
             plan_choice = "monthly"

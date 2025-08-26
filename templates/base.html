@@ -22,13 +22,14 @@
       <a href="{% url 'signup' %}">Signup</a>
     {% endif %}
   </nav>
+  <hr>
   <a href="{% url 'post_list' %}">Posts</a>
         {% if user.is_authenticated %}
             <a href="{% url 'profile' %}">Profile</a>
         {% endif %}
        
 
-
+<hr>
   <main>
     {% block content %}{% endblock %}
   </main>

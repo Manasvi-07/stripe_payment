@@ -6,10 +6,35 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+      - ./media:/app/media
     ports:
       - "8000:8000"
     depends_on:
       - db
+      - redis
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    command: celery -A stripe_project worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+      - redis
+  
+  celery-beat:
+    build: .
+    command: celery -A stripe_project beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - web
+      - redis 
 
   db:
     image: postgres:15

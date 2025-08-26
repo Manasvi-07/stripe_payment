@@ -70,3 +70,6 @@ vine==5.1.0
 wcwidth==0.2.13
 yarl==1.20.1
 gunicorn
+celery==5.5.3
+redis==6.2.0
+django-redis==5.4.0

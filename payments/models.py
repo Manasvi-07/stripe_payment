@@ -27,7 +27,7 @@ class Price(models.Model):
     stripe_price_id = models.CharField(max_length=100, blank=True, null=True)
     currency = models.CharField(max_length=10, default='usd')
     unit_amount = models.IntegerField(help_text="Amount in cents")
-    recurring_interval = models.CharField(max_length=10, choices=[('month', 'Monthly'), ('year', 'Yearly'), ('', 'One-time')], default='')
+    recurring_interval = models.CharField(max_length=10, choices=[('month', 'Monthly'), ('year', 'Yearly'), ('weekly', 'Weekly'),('', 'One-time')], default='')
 
     def __str__(self):
         suffix = f" - {self.recurring_interval}" if self.recurring_interval else ""
@@ -35,6 +35,7 @@ class Price(models.Model):
 
 class Subscription(models.Model):
     PLAN_CHOICES = [
+        ('weekly', '1 Week'),
         ('monthly', '1 Month'),
         ('yearly', '1 Year'),
     ]
@@ -52,6 +53,8 @@ class Subscription(models.Model):
                 self.end_date = timezone.now() + timedelta(days=30)
             elif self.plan_name == 'yearly':
                 self.end_date = timezone.now() + timedelta(days=365)
+            elif self.plan_name == 'weekly':
+                self.end_date = timezone.now() + timedelta(days=7)    
         super().save(*args, **kwargs)
 
     def __str__(self):
