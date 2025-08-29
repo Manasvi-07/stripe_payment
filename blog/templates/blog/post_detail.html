@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+<p>By {{ post.author.email }} on {{ post.created|date:"d M Y H:i" }}</p>
+<p>{{ post.content }}</p>               
+{% if user.is_authenticated and post.author == user %}
+    <a href="{% url 'post-update' post.pk %}">Edit</a>
+    <a href="{% url 'post-delete' post.pk %}">Delete</a>
+{% endif %}
+
+<hr>
+<h2>Comments</h2>
+
+{% if comments %}
+    <ul>
+        {% for comment in comments %}
+            <li>
+                <strong>{{ comment.author.email }}:</strong> {{ comment.content }}
+                <small>({{ comment.created|date:"d M Y H:i" }})</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No comments yet.</p>
+{% endif %}
+
+<hr>
+
+{% if user.is_authenticated %}
+    {% if user_comment_count < 2 or user_has_subscription %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <textarea name="content" rows="3" placeholder="Add a comment..." required></textarea><br>
+            <button type="submit">Post Comment</button>
+            <a href="{% url 'post_list' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    {% else %}
+
+        <p>You have reached the limit of 2 free comments on this post.</p>
+        <a href="{% url 'home' %}" class="btn btn-primary">Subscribe to More Comment</a>
+        <a href="{% url 'post_list' %}" class="btn btn-secondary">Cancel</a>
+    {% endif %}
+{% else %}
+    <p><a href="{% url 'login' %}">Login</a> to add a comment.</p>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,39 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: #f9f9f9;
+  }
+  
+  nav {
+    background: #8e8e8e;
+    padding: 10px;
+  }
+  
+  nav a {
+    color: #070202;
+    margin-right: 10px;
+    text-decoration: none;
+  }
+  
+  h2 {
+    color: #444;
+  }
+  
+  .product-card {
+    background: #b2b2b2;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
+  
+  .btn {
+    background: #58585a;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  
