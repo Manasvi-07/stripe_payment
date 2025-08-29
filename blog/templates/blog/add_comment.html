@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Add Comment - {{ post.title }}{% endblock %}
+
+{% block content %}
+<h1>Add Comment for "{{ post.title }}"</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <textarea name="content" class="form-control" rows="4" placeholder="Write your comment..."></textarea>
+    </div>
+    <button type="submit" class="btn btn-success">Submit</button>
+    <a href="{% url 'post_detail' post.pk %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
