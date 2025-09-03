@@ -14,6 +14,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -215,35 +216,32 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
-            'format': '{levelname} {asctime} {module} {message}',
+            'format': '{asctime} {levelname} {message}',
             'style': '{',
         },
         'simple': {
             'format': '{levelname} {message}',
             'style': '{',
-        },
+}       ,
     },
     'handlers': {
+        "payment_file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, 'logs/payments.log'),
+            "formatter": "verbose",
+        },
         'console': {
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose',
-        },
-        'file': {
-            'class': 'logging.FileHandler',
-            'filename': 'debug.log',
-            'formatter': 'verbose',
+            'formatter': 'simple',
         },
     },
+    
     'loggers': {
-        'django': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG', 
-            'propagate': True,
-        },
-        'myapp': { 
-            'handlers': ['console', 'file'],
+        'payments': { 
+            'handlers': ['payment_file', 'console'],
             'level': 'INFO',
-            'propagate': False,
+            'propagate': True,
         },
     },
 }

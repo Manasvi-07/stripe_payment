@@ -8,14 +8,13 @@ def send_payment_email(to_email, amount):
         from_email = settings.DEFAULT_FROM_EMAIL
         send_mail(subject, message, from_email, [to_email])
 
-def send_custom_email(to_email, plan, plan_name, subject, message, from_email=None):
+def send_custom_email(to_email, plan_name, end_date, from_email=None):
     if to_email:
         subject = "Your subscription is expiring soon!"
         message = (
-            f"Hi {to_email}"
-            f"will expire on {message}. "
-            f"your {plan}, {plan_name}."
+            f"Hi {to_email},\n\n"
+            f"Your subscription for {plan_name} will expire on {end_date}.\n"
             "Please renew before it ends."
         )
         from_email = settings.DEFAULT_FROM_EMAIL
-        send_mail(subject, message, plan, plan_name, from_email, [to_email])
+        send_mail(subject, message, from_email, [to_email])

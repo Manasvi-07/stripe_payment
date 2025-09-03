@@ -17,8 +17,7 @@ def send_subscription_reminders():
     for sub in expiring_subs:
         send_custom_email(
             to_email=sub.user.email,
-            subject=sub.plan_name,
-            message=sub.end_date.strftime("%Y-%m-%d"),
+            plan_name=sub.plan_name,
+            end_date=sub.end_date.strftime("%Y-%m-%d"),
             from_email=settings.DEFAULT_FROM_EMAIL,
-            plan_name=sub.plan_name
         )
